@@ -6,10 +6,15 @@ import android.graphics.Bitmap.Config
 import android.graphics.Bitmap.createScaledBitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import androidx.annotation.Px
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
+import androidx.core.graphics.component4
+import androidx.core.graphics.drawable.toBitmap
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -120,18 +125,74 @@ fun Array<Bitmap>.mergeBitmapVertical(
   }
 }
 
-fun Drawable.toBitmap(): Bitmap {
+fun Drawable.toBitmap(
+  @Px width: Int = intrinsicWidth,
+  @Px height: Int = intrinsicHeight,
+  config: Config? = null
+): Bitmap {
   if (this is BitmapDrawable) {
-    return bitmap
-  } else {
-    val bitmap = Bitmap.createBitmap(
-      intrinsicWidth,
-      intrinsicHeight,
-      if (opacity != PixelFormat.OPAQUE) Config.ARGB_8888 else Config.RGB_565
-    )
-    val canvas = Canvas(bitmap)
-    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-    draw(canvas)
-    return bitmap
+    if (bitmap == null) {
+      // This is slightly better than returning an empty, zero-size bitmap.
+      throw IllegalArgumentException("bitmap is null")
+    }
+    if (config == null || bitmap.config == config) {
+      // Fast-path to return original. Bitmap.createScaledBitmap will do this check, but it
+      // involves allocation and two jumps into native code so we perform the check ourselves.
+      if (width == bitmap.width && height == bitmap.height) {
+        return bitmap
+      }
+      return Bitmap.createScaledBitmap(bitmap, width, height, true)
+    }
   }
+
+  val (oldLeft, oldTop, oldRight, oldBottom) = bounds
+  val bitmap = Bitmap.createBitmap(width, height, config ?: Config.ARGB_8888)
+  setBounds(0, 0, width, height)
+  draw(Canvas(bitmap))
+
+  setBounds(oldLeft, oldTop, oldRight, oldBottom)
+  return bitmap
+}
+
+/**
+ * Returns a [Bitmap] representation of this [Drawable] or `null` if the drawable cannot be
+ * represented as a bitmap.
+ *
+ * If this instance is a [BitmapDrawable] and the [width], [height], and [config] match, the
+ * underlying [Bitmap] instance will be returned directly. If any of those three properties differ
+ * then a new [Bitmap] is created. For all other [Drawable] types, a new [Bitmap] is created.
+ *
+ * If the result of [BitmapDrawable.getBitmap] is `null` or the drawable cannot otherwise be
+ * represented as a bitmap, returns `null`.
+ *
+ * @param width Width of the desired bitmap. Defaults to [Drawable.getIntrinsicWidth].
+ * @param height Height of the desired bitmap. Defaults to [Drawable.getIntrinsicHeight].
+ * @param config Bitmap config of the desired bitmap. Null attempts to use the native config, if
+ * any. Defaults to [Config.ARGB_8888] otherwise.
+ * @see toBitmap
+ */
+public fun Drawable.toBitmapOrNull(
+  @Px width: Int = intrinsicWidth,
+  @Px height: Int = intrinsicHeight,
+  config: Config? = null
+): Bitmap? {
+  if (this is BitmapDrawable && bitmap == null) {
+    return null
+  }
+  return toBitmap(width, height, config)
+}
+
+/**
+ * Updates this drawable's bounds. This version of the method allows using named parameters
+ * to just set one or more axes.
+ *
+ * @see Drawable.setBounds
+ */
+public fun Drawable.updateBounds(
+  @Px left: Int = bounds.left,
+  @Px top: Int = bounds.top,
+  @Px right: Int = bounds.right,
+  @Px bottom: Int = bounds.bottom
+) {
+  setBounds(left, top, right, bottom)
 }
