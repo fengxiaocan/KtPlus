@@ -7,6 +7,7 @@ import android.graphics.Bitmap.Config
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import androidx.annotation.Px
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -22,6 +23,7 @@ fun Drawable.compress(
   context: Context,
   maxWidth: Int,
   maxHeight: Int,
+  config: Config? = null
 ): Drawable {
   if (maxWidth > 0) {
     //>0 为需要限制的宽/高，<=0 为不限制宽/高
@@ -32,13 +34,13 @@ fun Drawable.compress(
         val scale = max(scaleW, scaleH)
         val targetWidth = (intrinsicWidth / scale).toInt()
         val targetHeight = (intrinsicHeight / scale).toInt()
-        toBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888).toDrawable(context.resources)
+        toBitmap(targetWidth, targetHeight, config).toDrawable(context.resources)
       }
     } else {
       if (intrinsicWidth > maxWidth) {
         val scale = intrinsicWidth * 1f / maxWidth
         val targetHeight = (intrinsicHeight / scale).toInt()
-        toBitmap(maxWidth, targetHeight, Bitmap.Config.ARGB_8888).toDrawable(context.resources)
+        toBitmap(maxWidth, targetHeight, config).toDrawable(context.resources)
       }
     }
   } else {
@@ -46,7 +48,7 @@ fun Drawable.compress(
       if (intrinsicHeight > maxHeight) {
         val scale = intrinsicHeight * 1f / maxHeight
         val targetWidth = (intrinsicWidth / scale).toInt()
-        toBitmap(targetWidth, maxHeight, Bitmap.Config.ARGB_8888).toDrawable(context.resources)
+        toBitmap(targetWidth, maxHeight, config).toDrawable(context.resources)
       }
     }
   }
