@@ -34,13 +34,13 @@ fun Drawable.compress(
         val scale = max(scaleW, scaleH)
         val targetWidth = (intrinsicWidth / scale).toInt()
         val targetHeight = (intrinsicHeight / scale).toInt()
-        toBitmap(targetWidth, targetHeight, config).toDrawable(context.resources)
+        return toBitmap(targetWidth, targetHeight, config).toDrawable(context.resources)
       }
     } else {
       if (intrinsicWidth > maxWidth) {
         val scale = intrinsicWidth * 1f / maxWidth
         val targetHeight = (intrinsicHeight / scale).toInt()
-        toBitmap(maxWidth, targetHeight, config).toDrawable(context.resources)
+        return  toBitmap(maxWidth, targetHeight, config).toDrawable(context.resources)
       }
     }
   } else {
@@ -48,7 +48,7 @@ fun Drawable.compress(
       if (intrinsicHeight > maxHeight) {
         val scale = intrinsicHeight * 1f / maxHeight
         val targetWidth = (intrinsicWidth / scale).toInt()
-        toBitmap(targetWidth, maxHeight, config).toDrawable(context.resources)
+        return  toBitmap(targetWidth, maxHeight, config).toDrawable(context.resources)
       }
     }
   }
