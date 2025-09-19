@@ -4,9 +4,15 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.Bitmap.Config
+import android.graphics.Canvas
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.Px
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
+import androidx.core.graphics.component4
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import java.io.ByteArrayInputStream
@@ -165,4 +171,55 @@ fun Drawable.compress(
   val bytes = compressToBytes(format, quality, width, height, config)
   val inputStream = ByteArrayInputStream(bytes)
   return Drawable.createFromStream(inputStream, "CompressDrawable")!!
+}
+
+fun Drawable.toBitmap(
+  @Px width: Int = intrinsicWidth,
+  @Px height: Int = intrinsicHeight,
+  config: Config? = null,
+): Bitmap {
+  if (this is BitmapDrawable) {
+    if (bitmap == null) {
+      // This is slightly better than returning an empty, zero-size bitmap.
+      throw IllegalArgumentException("bitmap is null")
+    }
+    if (config == null || bitmap.config == config) {
+      // Fast-path to return original. Bitmap.createScaledBitmap will do this check, but it
+      // involves allocation and two jumps into native code so we perform the check ourselves.
+      if (width == bitmap.width && height == bitmap.height) {
+        return bitmap
+      }
+      return Bitmap.createScaledBitmap(bitmap, width, height, true)
+    }
+  }
+
+  val (oldLeft, oldTop, oldRight, oldBottom) = bounds
+  val bitmap = Bitmap.createBitmap(width, height, config ?: Config.ARGB_8888)
+  setBounds(0, 0, width, height)
+  draw(Canvas(bitmap))
+
+  setBounds(oldLeft, oldTop, oldRight, oldBottom)
+  return bitmap
+}
+
+public fun Drawable.toBitmapOrNull(
+  @Px width: Int = intrinsicWidth,
+  @Px height: Int = intrinsicHeight,
+  config: Config? = null,
+): Bitmap? {
+  if (this is BitmapDrawable && bitmap == null) {
+    return null
+  }
+  return toBitmap(width, height, config)
+}
+
+
+
+public fun Drawable.updateBounds(
+  @Px left: Int = bounds.left,
+  @Px top: Int = bounds.top,
+  @Px right: Int = bounds.right,
+  @Px bottom: Int = bounds.bottom,
+) {
+  setBounds(left, top, right, bottom)
 }

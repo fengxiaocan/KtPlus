@@ -8,7 +8,7 @@ package java_kt
  * str = ifNull(str,{"创建对象"})
  */
 fun <T> T?.ifNull(block: () -> T): T {
-    return this ?: block()
+  return this ?: block()
 }
 
 /**
@@ -17,7 +17,7 @@ fun <T> T?.ifNull(block: () -> T): T {
  * val size = ifNonNull(array,{array.size},0)
  */
 fun <T, R> R?.ifNonNull(block: (R) -> T, default: T): T {
-    return this?.let { block(this) } ?: default
+  return this?.let { block(this) } ?: default
 }
 
 /**
@@ -26,28 +26,28 @@ fun <T, R> R?.ifNonNull(block: (R) -> T, default: T): T {
  * val size = ifNonNull(array,{array.size},{19})
  */
 fun <T, R> R?.ifNonNull(block: (R) -> T, default: () -> T): T {
-    return this?.let { block(this) } ?: default()
+  return this?.let { block(this) } ?: default()
 }
 
 /**
  * 三元表达式
  */
 fun <T> Boolean?.ifElse(trueValue: T, falseValue: T): T {
-    return if (this == true) trueValue else falseValue
+  return if (this == true) trueValue else falseValue
 }
 
 /**
  * 三元表达式
  */
 fun <T> Boolean?.ifElse(trueValue: () -> T, falseValue: () -> T): T {
-    return if (this == true) trueValue() else falseValue()
+  return if (this == true) trueValue() else falseValue()
 }
 
 /**
  * 判断是否存在于数组中
  */
 fun <T> T.isIn(vararg values: T): Boolean {
-    return this in values
+  return this in values
 }
 
 /**
@@ -61,12 +61,11 @@ fun Boolean?.judge(): Boolean = this == true
  * @return
  */
 fun <T> T.isUnequalsAll(vararg values: T): Boolean {
-    for (element in values) {
-        if (element == this) return false
-    }
-    return true
+  for (element in values) {
+    if (element == this) return false
+  }
+  return true
 }
-
 
 /**
  * a != b || a != c || a != d
@@ -74,10 +73,10 @@ fun <T> T.isUnequalsAll(vararg values: T): Boolean {
  * @return
  */
 fun <T> T.isUnequalsIn(vararg values: T): Boolean {
-    for (element in values) {
-        if (element != this) return true
-    }
-    return false
+  for (element in values) {
+    if (element != this) return true
+  }
+  return false
 }
 
 /**
@@ -86,10 +85,17 @@ fun <T> T.isUnequalsIn(vararg values: T): Boolean {
  * @return
  */
 fun <T> T.isEqualsIn(vararg values: T): Boolean {
-    for (element in values) {
-        if (element == this) return true
-    }
-    return false
+  for (element in values) {
+    if (element == this) return true
+  }
+  return false
+}
+
+fun <T> T.isEqualsIn(values: Iterable<T>): Boolean {
+  for (element in values) {
+    if (element == this) return true
+  }
+  return false
 }
 
 /**
@@ -98,8 +104,17 @@ fun <T> T.isEqualsIn(vararg values: T): Boolean {
  * @return
  */
 fun <T> T.isEqualsAll(vararg values: T): Boolean {
-    for (element in values) {
-        if (element != this) return false
+  for (element in values) {
+    if (element != this) return false
+  }
+  return true
+}
+
+fun <T> Iterable<T>.contains(containsFilter: (T) -> Boolean): Boolean {
+  for (t in this) {
+    if (containsFilter(t)) {
+      return true
     }
-    return true
+  }
+  return false
 }

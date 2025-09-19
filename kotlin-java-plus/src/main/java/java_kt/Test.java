@@ -45,17 +45,22 @@ public class Test {
 //            System.err.println("))");
 //        }
 
-        String value = "WINDOW_SERVICE, WindowManager, LAYOUT_INFLATER_SERVICE, android.view.LayoutInflater, ACTIVITY_SERVICE, ActivityManager, POWER_SERVICE, android.os.PowerManager, ALARM_SERVICE, android.app.AlarmManager, NOTIFICATION_SERVICE, android.app.NotificationManager, KEYGUARD_SERVICE, android.app.KeyguardManager, LOCATION_SERVICE, android.location.LocationManager, SEARCH_SERVICE, android.app.SearchManager, SENSOR_SERVICE, android.hardware.SensorManager, STORAGE_SERVICE, StorageManager, VIBRATOR_MANAGER_SERVICE, android.os.VibratorManager, VIBRATOR_SERVICE, android.os.Vibrator, CONNECTIVITY_SERVICE, android.net.ConnectivityManager, WIFI_SERVICE, android.net.wifi.WifiManager, AUDIO_SERVICE, android.media.AudioManager, MEDIA_ROUTER_SERVICE, android.media.MediaRouter, TELEPHONY_SERVICE, android.telephony.TelephonyManager, TELEPHONY_SUBSCRIPTION_SERVICE, android.telephony.SubscriptionManager, CARRIER_CONFIG_SERVICE, android.telephony.CarrierConfigManager, EUICC_SERVICE, android.telephony.euicc.EuiccManager,  INPUT_METHOD_SERVICE, android.view.inputmethod.InputMethodManager, UI_MODE_SERVICE, android.app.UiModeManager, DOWNLOAD_SERVICE, android.app.DownloadManager, BATTERY_SERVICE, android.os.BatteryManager, JOB_SCHEDULER_SERVICE, android.app.job.JobScheduler, NETWORK_STATS_SERVICE, android.app.usage.NetworkStatsManager, android.os.HardwarePropertiesManager, HARDWARE_PROPERTIES_SERVICE, DOMAIN_VERIFICATION_SERVICE, android.content.pm.verify.domain.DomainVerificationManager, DISPLAY_HASH_SERVICE, android.view.displayhash.DisplayHashManager";
-        String[] split = value.split(",");
-        for (int i = 1; i < split.length; i+=2) {
-            System.err.println("import "+split[i].trim());
-        }
-        for (int i = 0; i < split.length; i+=2) {
-            String name = split[i+1].trim();
-            String realName = name.contains(".")?name.substring(name.lastIndexOf(".")+1):name;
-            String na = realName.substring(0,1).toLowerCase()+realName.substring(1);
-            System.err.println("fun Context."+ na+"()=");
-            System.err.println("getSystemService(Context."+split[i].trim()+") as "+realName);
-        }
+//        String value = "WINDOW_SERVICE, WindowManager, LAYOUT_INFLATER_SERVICE, android.view.LayoutInflater, ACTIVITY_SERVICE, ActivityManager, POWER_SERVICE, android.os.PowerManager, ALARM_SERVICE, android.app.AlarmManager, NOTIFICATION_SERVICE, android.app.NotificationManager, KEYGUARD_SERVICE, android.app.KeyguardManager, LOCATION_SERVICE, android.location.LocationManager, SEARCH_SERVICE, android.app.SearchManager, SENSOR_SERVICE, android.hardware.SensorManager, STORAGE_SERVICE, StorageManager, VIBRATOR_MANAGER_SERVICE, android.os.VibratorManager, VIBRATOR_SERVICE, android.os.Vibrator, CONNECTIVITY_SERVICE, android.net.ConnectivityManager, WIFI_SERVICE, android.net.wifi.WifiManager, AUDIO_SERVICE, android.media.AudioManager, MEDIA_ROUTER_SERVICE, android.media.MediaRouter, TELEPHONY_SERVICE, android.telephony.TelephonyManager, TELEPHONY_SUBSCRIPTION_SERVICE, android.telephony.SubscriptionManager, CARRIER_CONFIG_SERVICE, android.telephony.CarrierConfigManager, EUICC_SERVICE, android.telephony.euicc.EuiccManager,  INPUT_METHOD_SERVICE, android.view.inputmethod.InputMethodManager, UI_MODE_SERVICE, android.app.UiModeManager, DOWNLOAD_SERVICE, android.app.DownloadManager, BATTERY_SERVICE, android.os.BatteryManager, JOB_SCHEDULER_SERVICE, android.app.job.JobScheduler, NETWORK_STATS_SERVICE, android.app.usage.NetworkStatsManager, android.os.HardwarePropertiesManager, HARDWARE_PROPERTIES_SERVICE, DOMAIN_VERIFICATION_SERVICE, android.content.pm.verify.domain.DomainVerificationManager, DISPLAY_HASH_SERVICE, android.view.displayhash.DisplayHashManager";
+//        String[] split = value.split(",");
+//        for (int i = 1; i < split.length; i+=2) {
+//            System.err.println("import "+split[i].trim());
+//        }
+//        for (int i = 0; i < split.length; i+=2) {
+//            String name = split[i+1].trim();
+//            String realName = name.contains(".")?name.substring(name.lastIndexOf(".")+1):name;
+//            String na = realName.substring(0,1).toLowerCase()+realName.substring(1);
+//            System.err.println("fun Context."+ na+"()=");
+//            System.err.println("getSystemService(Context."+split[i].trim()+") as "+realName);
+//        }
+        System.err.println("KB>>BIT="+ByteUnit.KB.toString(100,ByteUnit.BIT,2));
+        System.err.println("GB>>BIT="+ByteUnit.GB.toString(100,ByteUnit.BIT,2));
+        System.err.println("GB>>KB="+ByteUnit.GB.toString(1,ByteUnit.KB,2));
+        System.err.println("GB>>MB="+ByteUnit.GB.toDouble(1,ByteUnit.MB));
+        System.err.println("10000000B="+FormatsKt.formatFileSize(1000000000L, 2));
     }
 }

@@ -103,3 +103,8 @@ fun ByteArray.base64Encode(): ByteArray {
 fun ByteArray.base64Decode(): ByteArray {
   return Base64.getDecoder().decode(this)
 }
+
+//将字节数组转换为ASCII字符串
+fun ByteArray.toAscii(): String {
+  return String(this, Charsets.US_ASCII)
+}

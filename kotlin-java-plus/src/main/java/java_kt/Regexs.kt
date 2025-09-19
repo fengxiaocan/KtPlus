@@ -1,5 +1,7 @@
 package java_kt
 
+import java.util.regex.Pattern
+
 /**
  * 判断一个字符串是不是数字
  */
@@ -122,4 +124,26 @@ fun CharSequence.isImgSrc(): Boolean {
 
 fun CharSequence.isHref(): Boolean {
   return "href=('|\")[^'\"]+('|\")".toRegex().matches(this)
+}
+
+fun CharSequence.regexNumber(): Array<Long> {
+  Pattern.compile("\\d+").apply {
+    val matcher = matcher(this@regexNumber)
+    val list = ArrayList<Long>()
+    while (matcher.find()) {
+      val group = matcher.group()
+      list.add(group.toLong())
+    }
+    return list.toTypedArray()
+  }
+}
+
+fun CharSequence.regex(regex: String): String? {
+  Pattern.compile(regex).apply {
+    val matcher = matcher(this@regex)
+    if (matcher.find()) {
+      return matcher.group()
+    }
+    return null
+  }
 }

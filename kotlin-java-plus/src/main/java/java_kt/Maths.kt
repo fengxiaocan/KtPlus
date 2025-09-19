@@ -122,3 +122,44 @@ fun getConfineScaling(maxWidth: Int, maxHeight: Int, width: Int, height: Int): F
     maxWidth.toFloat(), maxHeight.toFloat(), width.toFloat(), height.toFloat()
   )
 }
+
+
+/**
+ * @param value 误差值
+ * @param scope 误差范围
+ * @param equalScope 是否等于误差最大/小范围边界值
+ */
+fun Int.inToleranceScope(value: Int, scope: Int, equalScope: Boolean = true): Boolean {
+  return if (equalScope) this >= (value - scope) && this <= (value + scope) else
+    this > (value - scope) && this < (value + scope)
+}
+
+/**
+ * @param value 误差值
+ * @param scope 误差范围
+ * @param equalScope 是否等于误差最大/小范围边界值
+ */
+fun Float.inToleranceScope(value: Float, scope: Float, equalScope: Boolean = true): Boolean {
+  return if (equalScope) this >= (value - scope) && this <= (value + scope) else
+    this > (value - scope) && this < (value + scope)
+}
+
+/**
+ * @param value 误差值
+ * @param scope 误差范围
+ * @param equalScope 是否等于误差最大/小范围边界值
+ */
+fun Long.inToleranceScope(value: Long, scope: Long, equalScope: Boolean = true): Boolean {
+  return if (equalScope) this >= (value - scope) && this <= (value + scope) else
+    this > (value - scope) && this < (value + scope)
+}
+
+/**
+ * @param value 误差值
+ * @param scope 误差范围
+ * @param equalScope 是否等于误差最大/小范围边界值
+ */
+fun Double.inToleranceScope(value: Double, scope: Double, equalScope: Boolean = true): Boolean {
+  return if (equalScope) this >= (value - scope) && this <= (value + scope) else
+    this > (value - scope) && this < (value + scope)
+}

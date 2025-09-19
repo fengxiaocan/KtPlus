@@ -17,9 +17,23 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
+import android.util.DisplayMetrics
 import androidx.annotation.RequiresApi
 import java_kt.toHex
 
+fun Context.getScreenSize(): IntArray {
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    val metrics = windowManager().currentWindowMetrics
+    return intArrayOf(metrics.bounds.width(), metrics.bounds.height())
+  } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+    val metrics = DisplayMetrics()
+    windowManager().defaultDisplay.getRealMetrics(metrics)
+    return intArrayOf(metrics.widthPixels, metrics.heightPixels)
+  } else {
+    val defaultDisplay = windowManager().defaultDisplay
+    return intArrayOf(defaultDisplay.width, defaultDisplay.height)
+  }
+}
 
 /**
  * 获取包的信息
@@ -28,7 +42,7 @@ import java_kt.toHex
  */
 fun Context.getPackageInfo(
   packageName: String = this.packageName,
-  flags: Int = 0
+  flags: Int = 0,
 ): Result<PackageInfo> {
   return runCatching {
     packageManager.getPackageInfo(packageName, flags)
@@ -42,7 +56,7 @@ fun Context.getPackageInfo(
  */
 fun Context.getApplicationInfo(
   packageName: String = this.packageName,
-  flags: Int = 0
+  flags: Int = 0,
 ): Result<ApplicationInfo> {
   return runCatching {
     packageManager.getApplicationInfo(packageName, flags)
@@ -68,7 +82,7 @@ fun Context.getSourceApkPath(packageName: String = this.packageName): Result<Str
 fun Context.getActivityInfo(
   activityName: String,
   packageName: String = this.packageName,
-  flags: Int = 0
+  flags: Int = 0,
 ): Result<ActivityInfo> {
   return runCatching {
     packageManager.getActivityInfo(ComponentName(packageName, activityName), flags)
@@ -83,7 +97,7 @@ fun Context.getActivityInfo(
 fun Context.getServiceInfo(
   serviceName: String,
   packageName: String = this.packageName,
-  flags: Int = 0
+  flags: Int = 0,
 ): Result<ServiceInfo> {
   return runCatching {
     packageManager.getServiceInfo(ComponentName(packageName, serviceName), flags)
@@ -98,7 +112,7 @@ fun Context.getServiceInfo(
 fun Context.getReceiverInfo(
   receiverName: String,
   packageName: String = this.packageName,
-  flags: Int = 0
+  flags: Int = 0,
 ): Result<ActivityInfo> {
   return runCatching {
     packageManager.getReceiverInfo(ComponentName(packageName, receiverName), flags)
@@ -195,7 +209,7 @@ fun Context.getApplicationMetaData(packageName: String = this.packageName): Resu
  */
 fun Context.getActivityMetaData(
   activityName: String,
-  packageName: String = this.packageName
+  packageName: String = this.packageName,
 ): Result<Bundle> {
   return runCatching {
     val appInfo =
@@ -210,7 +224,7 @@ fun Context.getActivityMetaData(
  */
 fun Context.getServiceMetaData(
   serviceName: String,
-  packageName: String = this.packageName
+  packageName: String = this.packageName,
 ): Result<Bundle> {
   return runCatching {
     val appInfo =
@@ -225,7 +239,7 @@ fun Context.getServiceMetaData(
  */
 fun Context.getReceiverMetaData(
   receiverName: String,
-  packageName: String = this.packageName
+  packageName: String = this.packageName,
 ): Result<Bundle> {
   return runCatching {
     val appInfo =
@@ -240,7 +254,11 @@ fun Context.getReceiverMetaData(
  * @return `true`: 是<br></br>`false`: 否
  */
 fun Context.isAppDebug(packageName: String = this.packageName): Result<Boolean> {
-  return runCatching { getApplicationInfo(packageName).getOrThrow().flags and ApplicationInfo.FLAG_DEBUGGABLE != 0 }
+  return runCatching {
+    getApplicationInfo(
+      packageName
+    ).getOrThrow().flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+  }
 }
 
 /**
